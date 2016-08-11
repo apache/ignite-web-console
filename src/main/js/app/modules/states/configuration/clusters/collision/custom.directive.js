@@ -15,30 +15,13 @@
  * limitations under the License.
  */
 
-export default ['$cleanup', () => {
-    const cleanup = (original, dist) => {
-        if (_.isUndefined(original))
-            return dist;
+import templateUrl from './custom.jade';
 
-        if (_.isObject(original)) {
-            _.forOwn(original, (value, key) => {
-                if (/\$\$hashKey/.test(key))
-                    return;
-
-                const attr = cleanup(value);
-
-                if (!_.isNil(attr)) {
-                    dist = dist || {};
-                    dist[key] = attr;
-                }
-            });
-        } else if ((_.isString(original) && original.length) || _.isNumber(original) || _.isBoolean(original))
-            dist = original;
-        else if (_.isArray(original) && original.length)
-            dist = _.map(original, (value) => cleanup(value, {}));
-
-        return dist;
+export default ['igniteConfigurationClustersCollisionCustom', [() => {
+    return {
+        scope: true,
+        restrict: 'E',
+        templateUrl,
+        replace: true
     };
-
-    return cleanup;
-}];
+}]];

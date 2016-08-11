@@ -15,29 +15,19 @@
  * limitations under the License.
  */
 
-import gulp from 'gulp';
-import cache from 'gulp-cached';
-import eslint from 'gulp-eslint';
-import sequence from 'gulp-sequence';
+// Filter domain models with key fields configuration.
+export default ['domainsValidation', ['IgniteLegacyUtils', (LegacyUtils) => (domains, valid, invalid) => {
+    if (valid && invalid)
+        return domains;
 
-const paths = [
-    './app/**/*.js',
-    './gulpfile.babel.js/**/*.js',
-    './gulpfile.babel.js/*.js'
-];
+    const out = [];
 
-gulp.task('eslint:node', () =>
-	gulp.src('./serve/**/*.js')
-        .pipe(cache('eslint:node'))
-		.pipe(eslint({envs: ['node']}))
-		.pipe(eslint.format())
-);
+    _.forEach(domains, function(domain) {
+        const _valid = !LegacyUtils.domainForStoreConfigured(domain) || LegacyUtils.isJavaBuiltInClass(domain.keyType) || !_.isEmpty(domain.keyFields);
 
-gulp.task('eslint:browser', () =>
-	gulp.src(paths)
-        .pipe(cache('eslint:browser'))
-		.pipe(eslint({envs: ['browser']}))
-		.pipe(eslint.format())
-);
+        if (valid && _valid || invalid && !_valid)
+            out.push(domain);
+    });
 
-gulp.task('eslint', (cb) => sequence('eslint:browser', 'eslint:node', cb));
+    return out;
+}]];

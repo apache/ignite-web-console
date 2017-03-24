@@ -15,16 +15,10 @@
  * limitations under the License.
  */
 
-import './list-of-registered-users.scss';
+import angular from 'angular';
 
-import templateUrl from './list-of-registered-users.tpl.pug';
-import controller from './list-of-registered-users.controller';
+import inputDialog from './input-dialog.service';
 
-export default [() => {
-    return {
-        scope: true,
-        templateUrl,
-        controller,
-        controllerAs: '$ctrl'
-    };
-}];
+angular
+    .module('ignite-console.input-dialog', [])
+    .service('IgniteInput', inputDialog);

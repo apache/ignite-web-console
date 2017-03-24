@@ -15,16 +15,21 @@
  * limitations under the License.
  */
 
-import './list-of-registered-users.scss';
+export default class InputDialogController {
+    static $inject = ['deferred', 'ui'];
 
-import templateUrl from './list-of-registered-users.tpl.pug';
-import controller from './list-of-registered-users.controller';
+    constructor(deferred, {title, label, value, toValidValue}) {
+        this.deferred = deferred;
+        this.title = title;
+        this.label = label;
+        this.value = value;
+        this.toValidValue = toValidValue;
+    }
 
-export default [() => {
-    return {
-        scope: true,
-        templateUrl,
-        controller,
-        controllerAs: '$ctrl'
-    };
-}];
+    confirm() {
+        if (_.isFunction(this.toValidValue))
+            return this.deferred.resolve(this.toValidValue(this.value));
+
+        this.deferred.resolve(this.value);
+    }
+}

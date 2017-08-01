@@ -15,34 +15,16 @@
  * limitations under the License.
  */
 
-'use strict';
+import angular from 'angular';
 
-// Fire me up!
+import uiGridCell from './cell';
+import uiGridHovering from './hovering';
+import uiGridViewport from './viewport';
 
-module.exports = {
-    implements: 'middlewares:api',
-    inject: ['require("mongodb-core")']
-};
+import './style.scss';
 
-module.exports.factory = (mongodb) => {
-    return (req, res, next) => {
-        res.api = {
-            error(err) {
-                if (err instanceof mongodb.MongoError)
-                    res.status(500).send(err.message);
-
-                res.status(err.httpCode || err.code || 500).send(err.message);
-            },
-            ok(data) {
-                res.status(200).json(data);
-            },
-            serverError(err) {
-                err.httpCode = 500;
-
-                res.api.error(err);
-            }
-        };
-
-        next();
-    };
-};
+export default angular
+    .module('ignite-console.ui-grid-hovering', [])
+    .directive('uiGridCell', uiGridCell)
+    .directive('uiGridHovering', uiGridHovering)
+    .directive('uiGridViewport', uiGridViewport);

@@ -15,34 +15,17 @@
  * limitations under the License.
  */
 
-'use strict';
-
-// Fire me up!
-
-module.exports = {
-    implements: 'middlewares:api',
-    inject: ['require("mongodb-core")']
-};
-
-module.exports.factory = (mongodb) => {
-    return (req, res, next) => {
-        res.api = {
-            error(err) {
-                if (err instanceof mongodb.MongoError)
-                    res.status(500).send(err.message);
-
-                res.status(err.httpCode || err.code || 500).send(err.message);
-            },
-            ok(data) {
-                res.status(200).json(data);
-            },
-            serverError(err) {
-                err.httpCode = 500;
-
-                res.api.error(err);
-            }
-        };
-
-        next();
+export default function() {
+    return {
+        priority: 0,
+        require: '^uiGrid',
+        compile() {
+            return {
+                pre($scope, $element, attrs, uiGridCtrl) {
+                    uiGridCtrl.grid.options.enableHovering = true;
+                },
+                post() { }
+            };
+        }
     };
-};
+}

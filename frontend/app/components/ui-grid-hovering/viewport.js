@@ -15,34 +15,28 @@
  * limitations under the License.
  */
 
-'use strict';
+import angular from 'angular';
 
-// Fire me up!
+export default function() {
+    return {
+        priority: -200,
+        compile($el) {
+            let newNgClass = '';
 
-module.exports = {
-    implements: 'middlewares:api',
-    inject: ['require("mongodb-core")']
-};
+            const rowRepeatDiv = angular.element($el.children().children()[0]);
+            const existingNgClass = rowRepeatDiv.attr('ng-class');
 
-module.exports.factory = (mongodb) => {
-    return (req, res, next) => {
-        res.api = {
-            error(err) {
-                if (err instanceof mongodb.MongoError)
-                    res.status(500).send(err.message);
+            if (existingNgClass)
+                newNgClass = existingNgClass.slice(0, -1) + ', "ui-grid-row-hovered": row.isHovered }';
+            else
+                newNgClass = '{ "ui-grid-row-hovered": row.isHovered }';
 
-                res.status(err.httpCode || err.code || 500).send(err.message);
-            },
-            ok(data) {
-                res.status(200).json(data);
-            },
-            serverError(err) {
-                err.httpCode = 500;
+            rowRepeatDiv.attr('ng-class', newNgClass);
 
-                res.api.error(err);
-            }
-        };
-
-        next();
+            return {
+                pre() { },
+                post() { }
+            };
+        }
     };
-};
+}

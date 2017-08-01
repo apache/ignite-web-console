@@ -15,34 +15,24 @@
  * limitations under the License.
  */
 
-'use strict';
+export default class {
+    static $inject = ['$scope', 'uiGridConstants'];
 
-// Fire me up!
+    constructor($scope, uiGridConstants) {
+        Object.assign(this, {$scope, uiGridConstants});
+    }
 
-module.exports = {
-    implements: 'middlewares:api',
-    inject: ['require("mongodb-core")']
-};
+    $onChanges(changes) {
+        if (changes && 'gridApi' in changes && changes.gridApi.currentValue) {
+            this.applyValues();
 
-module.exports.factory = (mongodb) => {
-    return (req, res, next) => {
-        res.api = {
-            error(err) {
-                if (err instanceof mongodb.MongoError)
-                    res.status(500).send(err.message);
+            this.gridApi.grid.registerDataChangeCallback(() => this.applyValues(), [this.uiGridConstants.dataChange.ROW]);
+            this.gridApi.selection.on.rowSelectionChanged(this.$scope, () => this.applyValues());
+        }
+    }
 
-                res.status(err.httpCode || err.code || 500).send(err.message);
-            },
-            ok(data) {
-                res.status(200).json(data);
-            },
-            serverError(err) {
-                err.httpCode = 500;
-
-                res.api.error(err);
-            }
-        };
-
-        next();
-    };
-};
+    applyValues() {
+        this.selected = this.gridApi.selection.getSelectedRows().length;
+        this.count = this.gridApi.grid.rows.length;
+    }
+}

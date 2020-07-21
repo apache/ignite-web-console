@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<!--
+    POM file.
+-->
+<project
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.apache</groupId>
+        <artifactId>apache</artifactId>
+        <version>16</version>
+    </parent>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <!-- Dependency versions -->
+        <ignite.version>2.8.1</ignite.version>
+        <jackson.version>2.9.10</jackson.version>
+        <slf4j.version>1.7.7</slf4j.version>
+
+        <!-- Maven plugins versions -->
+        <maven.javadoc.plugin.version>3.2.0</maven.javadoc.plugin.version>
+    </properties>
+
+    <groupId>org.apache.ignite</groupId>
+    <artifactId>ignite-parent</artifactId>
+    <version>1</version>
+    <packaging>pom</packaging>
+
+    <url>http://ignite.apache.org</url>
+
+    <description>Web Console for Apache Ignite.</description>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <mailingLists>
+        <mailingList>
+            <name>Ignite Dev List</name>
+            <subscribe>dev-subscribe@ignite.apache.org</subscribe>
+            <unsubscribe>dev-unsubscribe@ignite.apache.org</unsubscribe>
+            <post>dev@ignite.apache.org</post>
+            <archive>http://mail-archives.apache.org/mod_mbox/ignite-dev</archive>
+        </mailingList>
+    </mailingLists>
+
+    <issueManagement>
+        <system>jira</system>
+        <url>http://issues.apache.org/jira/browse/IGNITE</url>
+    </issueManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>checkstyle</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <version>${maven.checkstyle.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>style</id>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <consoleOutput>true</consoleOutput>
+                                    <logViolationsToConsole>true</logViolationsToConsole>
+                                    <failsOnError>true</failsOnError>
+                                    <failOnViolation>true</failOnViolation>
+                                    <outputFile>${project.build.directory}/checkstyle-result.xml</outputFile>
+                                    <configLocation>../checkstyle/checkstyle.xml</configLocation>
+                                    <suppressionsLocation>../checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+                                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                                    <excludes>**/generated/**/*</excludes>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.ignite</groupId>
+                                <artifactId>ignite-tools</artifactId>
+                                <version>${project.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>com.puppycrawl.tools</groupId>
+                                <artifactId>checkstyle</artifactId>
+                                <version>${checkstyle.puppycrawl.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>check-licenses</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.rat</groupId>
+                        <artifactId>apache-rat-plugin</artifactId>
+                        <version>0.12</version>
+                        <configuration>
+                            <addDefaultLicenseMatchers>false</addDefaultLicenseMatchers>
+                            <licenses>
+                                <license implementation="org.apache.rat.analysis.license.FullTextMatchingLicense">
+                                    <licenseFamilyCategory>IAL20</licenseFamilyCategory>
+                                    <licenseFamilyName>Ignite Apache License 2.0</licenseFamilyName>
+                                    <fullText>
+                                        Licensed to the Apache Software Foundation (ASF) under one or more
+                                        contributor license agreements.  See the NOTICE file distributed with
+                                        this work for additional information regarding copyright ownership.
+                                        The ASF licenses this file to You under the Apache License, Version 2.0
+                                        (the "License"); you may not use this file except in compliance with
+                                        the License.  You may obtain a copy of the License at
+
+                                        http://www.apache.org/licenses/LICENSE-2.0
+
+                                        Unless required by applicable law or agreed to in writing, software
+                                        distributed under the License is distributed on an "AS IS" BASIS,
+                                        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+                                        See the License for the specific language governing permissions and
+                                        limitations under the License.
+                                    </fullText>
+                                </license>
+                            </licenses>
+                            <licenseFamilies>
+                                <licenseFamily implementation="org.apache.rat.license.SimpleLicenseFamily">
+                                    <familyName>Ignite Apache License 2.0</familyName>
+                                </licenseFamily>
+                            </licenseFamilies>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                                <configuration>
+                                    <excludes>
+                                        <exclude>work/**</exclude>
+                                        <exclude>**/target/**</exclude>
+                                        <exclude>**/*.log</exclude>
+                                        <exclude>**/licenses/*.txt</exclude><!--files of licenses-->
+                                        <exclude>**/*readme*.txt</exclude><!--readme files-->
+                                        <exclude>**/*.sql</exclude><!--sql files-->
+                                        <exclude>**/*README*.txt</exclude><!--readme files-->
+                                        <exclude>**/*README*.md</exclude><!--readme files-->
+                                        <exclude>**/*CONTRIBUTING*.md</exclude><!--readme files-->
+                                        <exclude>**/*index*.md</exclude><!--readme files-->
+                                        <exclude>**/*.timestamp</exclude><!--tmp-files-->
+                                        <exclude>**/*.iml</exclude><!--IDEA files-->
+                                        <exclude>**/*.csv</exclude><!--CSV files-->
+                                        <exclude>**/*.jks</exclude><!--bin-files-->
+                                        <exclude>**/pom-installed.xml</exclude><!--tmp-files-->
+                                        <exclude>**/keystore</exclude><!--bin-files-->
+                                        <exclude>**/keystore/*.jks</exclude><!--bin-files-->
+                                        <exclude>**/keystore/*.pem</exclude><!--auto generated files-->
+                                        <exclude>**/keystore/*.pfx</exclude><!--bin-files-->
+                                        <exclude>**/keystore/ca/*.jks</exclude><!--bin-files-->
+                                        <exclude>**/keystore/ca/*.key</exclude><!--bin-files-->
+                                        <exclude>**/keystore/ca/*.txt</exclude><!--auto generated files-->
+                                        <exclude>**/keystore/ca/*.txt.attr</exclude><!--auto generated files-->
+                                        <exclude>**/keystore/ca/*serial</exclude><!--auto generated files-->
+                                        <exclude>**/META-INF/services/**</exclude> <!-- Interface mappings: cannot be changed -->
+
+                                        <!-- Web Console -->
+                                        <exclude>**/web-console/**/.eslintrc</exclude>
+                                        <exclude>**/web-console/**/.babelrc</exclude>
+                                        <exclude>**/web-console/**/*.json</exclude>
+                                        <exclude>**/web-console/**/*.json.sample</exclude>
+                                        <exclude>**/web-console/backend/build/**</exclude>
+                                        <exclude>**/web-console/backend/node_modules/**</exclude>
+                                        <exclude>**/web-console/e2e/testcafe/node_modules/**</exclude>
+                                        <exclude>**/web-console/frontend/build/**</exclude>
+                                        <exclude>**/web-console/frontend/node_modules/**</exclude>
+                                        <exclude>**/web-console/frontend/**/*.png</exclude>
+                                        <exclude>**/web-console/frontend/**/*.svg</exclude>
+
+                                        <!-- Packaging -->
+                                        <exclude>packaging/**</exclude>
+                                    </excludes>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
